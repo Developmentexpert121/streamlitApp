@@ -3,8 +3,289 @@ import streamlit as st
 import time
 import sys
 import os
-
+from streamlit_modal import Modal
 from dotenv import load_dotenv
+# Set the sidebar background color to dark
+st.markdown(
+    """
+    <style>
+    [data-testid="stSidebarUserContent"] button[data-testid="baseButton-secondary"] {
+                background: none;
+                width: 100%;
+                border: 0 !important;
+                justify-content: start;
+            }
+    p, h1, h2, h3, h4, h5, h6, div, body {
+            color: #fff !important;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            padding-top: 0;
+        }
+    [data-testid="stSidebar"], .stApp[data-testid="stApp"] {
+        background: #09241f;
+        color: #fff;
+    }
+    [data-testid="stSidebarUserContent"] label[data-baseweb="radio"] > div:last-child p,
+    [data-testid="stSidebarUserContent"] h1, [data-testid="stSidebar"] + section.main h1 {
+        color: #fff;
+    }
+    [data-testid="stSidebarUserContent"] label[data-baseweb="radio"] > div:first-child {
+        display: none;
+    }
+    [data-testid="stSidebarUserContent"] label[data-baseweb="radio"] > div:last-child {
+        padding: 10px;
+        width: 100%;
+        border-radius: 10px;
+    }
+    [data-testid="stAppViewBlockContainer"] {
+        max-width: 1000px;
+        padding-inline: 40px;
+    }
+    [data-testid="stSidebar"] + section.main h1 {
+        padding-top: 0;
+    }
+    [data-testid="stSidebarUserContent"] label[data-baseweb="radio"] {
+        width: 100%;
+        margin-right: 0;
+    }
+    [data-testid="stSidebarUserContent"] [data-testid="stWidgetLabel"] {
+        display: none;
+    }
+    [data-testid="stSidebar"] + section.main {
+        background: #0f352e;
+    }
+    header[data-testid="stHeader"] {
+        background: #09241f;
+    }
+    [data-testid="baseButton-headerNoPadding"] {
+        background-color: rgb(255 255 255 / 85%) !important;
+        color: #000 !important
+    }
+    [data-testid="baseButton-headerNoPadding"]:hover {
+        background-color: rgb(255 255 255 / 100%) !important;
+    }
+    [data-testid="stSidebarUserContent"] label[data-baseweb="radio"] [tabindex="0"] + div:last-child, 
+    [data-testid="stSidebarUserContent"] label[data-baseweb="radio"] [tabindex="-1"] + div:last-child:hover {
+        background: #307f71;
+    }
+    [data-testid="stSidebarUserContent"] [role="radiogroup"] {
+        gap: 5px;
+    }
+    hr {
+        background-color: #ffffff40;
+    }
+    [key="data-modal"] [data-testid="stVerticalBlock"] {
+        margin: 0 !important;
+        border-radius: 20px !important;
+    }
+    [data-testid="stHeadingWithActionElements"] h2 {
+        padding-bottom: 0 !important;
+    }
+    div[data-modal-container='true'][key='data-modal'] [data-testid="stMarkdownContainer"] hr {
+        margin-block: 10px 30px;
+    }
+        [key='data-modal'] .stRadio > div {
+            display: flex;
+            justify-content: space-around;
+        }
+        [key="data-modal"] [data-testid="baseButton-secondary"] {
+            background-color: #307f71 !important;
+            color: white;
+            width: auto !important;
+            padding: 10px 30px;
+            border-radius: 10px;
+            margin-left: auto;
+            display: block;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            flex-grow: 1;
+            text-align: center;
+            border: 0;
+        }
+        .element-container.st-emotion-cache-shybcl button.st-emotion-cache-15hul6a.ef3psqc13:hover {
+            background-color: #0f352e;
+        }
+        .element-container.st-emotion-cache-oertxx.e1f1d6gn4 button.st-emotion-cache-15hul6a.ef3psqc13 {
+            background: #fff0;
+            width: 40px;
+            display: block;
+            margin-left: auto;
+        }
+        .element-container.st-emotion-cache-oertxx.e1f1d6gn4 button.st-emotion-cache-15hul6a.ef3psqc13:hover {
+            background: #307f71;
+            border-color: #307f71;
+        }
+        [key='data-modal'] .stRadio > div > label { width: 100%; }
+        [key='data-modal'] .stRadio > div > label > div:last-child {
+            background-color: #0f352e;
+            color: white;
+            padding: 20px 20px;
+            border-radius: 10px;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            flex-grow: 1;
+            text-align: center;
+            margin: 5px;
+        }
+        [key='data-modal'] .stRadio > div > label > div:last-child:hover,
+         [key='data-modal'] .stRadio > div > label > input[tabindex="0"] + div:last-child {
+            background-color: #307f71;
+        }
+        [key='data-modal'] .stRadio > div > label > div:first-child {
+            display: none;
+        }
+        [key='data-modal'] .stRadio > div > label[aria-checked="true"] {
+            background-color: #2196F3;
+        }
+        div[data-modal-container='true'][key='data-modal'] > div:first-child > div:first-child {
+            background: #09241f !important;
+        }
+        [key='data-modal'] .stRadio > div[role="radiogroup"] {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            margin-inline: -5px;
+        }
+        .footer-hr {
+            margin-block: 20px 20px !important;
+        }
+        [key="data-modal"] [data-testid="column"] [data-test-scroll-behavior="normal"] [data-testid="baseButton-secondary"] {
+            width: 45px;
+            padding-inline: 14px;
+        }
+        [data-testid="stExpander"] summary {
+                background: #09241f;
+                border-radius: 10px;
+                align-items: center;
+                outline: none !important;
+            }
+            [data-testid="stExpander"] summary:hover {
+                color: #fff;
+            }
+            [data-testid="stExpander"] summary:hover svg {
+                fill: #fff;
+            }
+            [data-testid="stExpander"] summary p {
+                font-size: 18px;
+            }
+            [data-testid="stExpanderDetails"] {
+                padding-top: 20px;
+                margin-top: -10px;
+                background: #09241f;
+                border-radius: 0px 0 10px 10px;
+            }
+            .flex-center {
+                display: flex;
+                gap: 15px;
+                align-items: center;
+            }
+            p:last-child {
+                margin-bottom:0;
+            }
+            .m-n10 {
+                margin-inline: -10px;
+            }
+            .col-33 {
+                padding-inline: 10px;
+                width: 33.33%;
+            }
+            .flex-wrap {
+                display: flex;
+                flex-wrap: wrap;
+            }
+            hr {
+                background-color: #ffffff40;
+            }
+            .card-border {
+                padding: 15px;
+                text-align: center;
+                background: #09241f;
+                border-radius: 10px;
+                margin-bottom: 20px !important;
+            }
+            [data-testid="stChatInputSubmitButton"] {
+                color: #307f71 !important;
+            }
+            [data-testid="stChatInput"] {
+                background: none;
+            }
+            [data-testid="stChatInput"] [data-baseweb="textarea"] {
+                border-color: #307f71;
+            }
+            [data-testid="stChatInput"] [data-baseweb="textarea"] textarea {
+                color: #fff !important;
+            }
+            .ai-default-text {
+                margin-bottom: 25px;
+            }
+            .user-command {
+                justify-content: end;
+                flex-direction: row-reverse;
+                padding: 10px;
+                margin-bottom: 30px;
+                background: #09241f;
+                border-radius: 10px;
+            }
+            .ai-generated {
+                padding-bottom: 30px;
+            }
+            [data-testid="stChatMessage"] {
+                background: #09241f;
+                border-radius: 10px;
+            }
+            [data-testid="stBottom"] > div {
+                background: #0f352e;
+            }
+            [data-testid="stBottom"] [data-testid="stBottomBlockContainer"] {
+                max-width: 1000px;
+                padding-inline: 40px;
+            }
+            .ai-default-text > div {
+                display: flex;
+                width: 3rem;
+                height: 3rem;
+                flex-shrink: 0;
+                border-radius: 0.5rem;
+                -webkit-box-align: center;
+                align-items: center;
+                -webkit-box-pack: center;
+                justify-content: center;
+                background-color: rgb(255, 189, 69);
+            }
+            .ai-default-text > div > svg {
+                width: 2rem;
+                height: 2rem;
+            }
+            [data-testid="stTooltipIcon"] > div, [data-testid="stTooltipIcon"] > div > button {
+                width: 100% !important;
+            }
+            [data-testid="stTooltipIcon"] > div > button {
+                background: #09241f;
+                border-radius: 10px;
+            }
+            [data-testid="stTooltipIcon"] > div > button {
+                background: #09241f !important;
+                border-radius: 10px !important;
+                padding: 25px 10px;
+                border: 0 !important;
+            }
+            
+            [data-testid="stSidebarUserContent"] button[data-testid="baseButton-secondary"]:hover {
+                background: #307f71;
+            }
+            div[data-modal-container='true'][key='data-modal'] {
+                height: 100%;
+                top: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 load_dotenv()
 
@@ -69,17 +350,54 @@ conn = st.connection(
 )
 
 with st.sidebar:
-    st.title("🔮 Magic Chat")
-    st.subheader("The Generative Gathering")
+    st.title("Streamlit Chat")
+    # st.subheader("The Generative Gathering")
     st.markdown(
-        """Magic Chat is a chatbot built with [Streamlit](https://streamlit.io/) and [Weaviate](https://weaviate.io/) to search for [Magic the Gathering](https://magic.wizards.com/en) cards. 
-        It offers multiple search options such as traditional BM25, Semantic, Hybrid, and Generative Search to find cards for your dream deck. 
-        Whether you're looking for blue cards to nullify spells, black cards to create an undead army, or just want to find new cool cards! 
-        Our Weaviate database contains 27k cards from the [Scryfall API](https://scryfall.com/) ready for you to be discovered."""
+        """Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."""
     )
-    st.header("Settings")
-    st.success("Connected to Weaviate client", icon="💚")
+    # st.header("Settings")
+    # st.success("Connected to Weaviate client", icon="💚")
+    # Navigation
+    menu = st.radio(
+        "Go to",
+        [
+            "🏠 Home",
+            "📄 FAQ",
+            "📑 Contact",
+            "📊 About Us",
+            "📊 Signin"
+        ]
+    )
+    # Show the "Open" button in the sidebar directly
+    modal = Modal(
+        "Lorem Ipsum", 
+        key="data-modal",
+        
+        # Optional
+        padding=20,    # default value
+        max_width=744  # default value
+    )
+    open_modal = st.sidebar.button("📊 Pop Up")
+    if open_modal:
+        modal.open()
 
+    if modal.is_open():
+        with modal.container():
+            # Streamlit radio buttons as buttons
+            option = st.radio("Select an Template:", ["Image + Text", "Text + Data Table", "Data Table + Image"], index=0)
+            st.markdown ("""<hr class="footer-hr">""", unsafe_allow_html=True)
+            st.button("Generate", key="hidden-generate-button")
+            # Display selected option
+            # st.write(f"Selected: {option}")
+
+    # Map menu items to functions
+    pages = {
+        "🏠 Home": "home",
+        "📄 FAQ": "faq",
+        "📑 Contact": "contact",
+        "📊 About Us": "about",
+        "📊 Signin": "signin"
+    }
 # Search Mode descriptions
 
 bm25_gql = """
