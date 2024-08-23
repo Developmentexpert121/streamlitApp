@@ -706,27 +706,27 @@ example_prompts_help = [
     "Search for card types with specific abilities",
 ]
 
-button_cols = st.columns(3)
-button_cols_2 = st.columns(3)
+# button_cols = st.columns(3)
+# button_cols_2 = st.columns(3)
 
-button_pressed = ""
+# button_pressed = ""
 
-if button_cols[0].button(example_prompts[0], help=example_prompts_help[0]):
-    button_pressed = example_prompts[0]
-elif button_cols[1].button(example_prompts[1], help=example_prompts_help[1]):
-    button_pressed = example_prompts[1]
-elif button_cols[2].button(example_prompts[2], help=example_prompts_help[2]):
-    button_pressed = example_prompts[2]
+# if button_cols[0].button(example_prompts[0], help=example_prompts_help[0]):
+#     button_pressed = example_prompts[0]
+# elif button_cols[1].button(example_prompts[1], help=example_prompts_help[1]):
+#     button_pressed = example_prompts[1]
+# elif button_cols[2].button(example_prompts[2], help=example_prompts_help[2]):
+#     button_pressed = example_prompts[2]
 
-elif button_cols_2[0].button(example_prompts[3], help=example_prompts_help[3]):
-    button_pressed = example_prompts[3]
-elif button_cols_2[1].button(example_prompts[4], help=example_prompts_help[4]):
-    button_pressed = example_prompts[4]
-elif button_cols_2[2].button(example_prompts[5], help=example_prompts_help[5]):
-    button_pressed = example_prompts[5]
+# elif button_cols_2[0].button(example_prompts[3], help=example_prompts_help[3]):
+#     button_pressed = example_prompts[3]
+# elif button_cols_2[1].button(example_prompts[4], help=example_prompts_help[4]):
+#     button_pressed = example_prompts[4]
+# elif button_cols_2[2].button(example_prompts[5], help=example_prompts_help[5]):
+#     button_pressed = example_prompts[5]
 
 
-if prompt := (st.chat_input("What cards are you looking for?") or button_pressed):
+if prompt := (st.chat_input("What cards are you looking for?")):
     # Display user message in chat message container
     with st.chat_message("user"):
         st.markdown(prompt)
