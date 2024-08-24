@@ -251,6 +251,7 @@ hr {
   border-radius: 10px;
   margin-bottom: 20px !important;
 }
+
 [data-testid="stChatInputSubmitButton"] {
   color: #307f71 !important;
 }
@@ -336,4 +337,9 @@ div[data-modal-container="true"] {
 [data-testid="stCodeBlock"] > pre {
   background: #0f352e !important;
   margin-top: 10px;
+}
+
+[data-modal-container='true'][key='image-text'] > div:first-child > div:first-child {
+  left: 78% !important;
+  position: relative !important;
 }

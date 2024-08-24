@@ -7,6 +7,7 @@ from streamlit_modal import Modal
 from dotenv import load_dotenv
 import pandas as pd
 import numpy as np
+import requests
 
 # Load external CSS
 def load_css():
@@ -360,13 +361,32 @@ def render_contact_page():
 
         if submit_button:
             if name and subject and email and message:
-                st.success("Form submitted successfully!")
+                # Prepare form data
+                form_data = {
+                    'name': name,
+                    'subject': subject,
+                    'email': email,
+                    'message': message
+                }
+
+                # Prepare file data if available
+                files = {}
+                if uploaded_file is not None:
+                    files = {'file': (uploaded_file.name, uploaded_file, uploaded_file.type)}
+
+                # Send data to API
+                response = requests.post('http://streamlit.devexhub.com/contact', data=form_data, files=files)
                 
+                if response.status_code == 200:
+                    st.success("Form submitted successfully!")
+                else:
+                    st.error("Failed to submit form. Please try again later.")
+
                 # Display uploaded image if any
                 if uploaded_file is not None:
                     st.image(uploaded_file, caption='Uploaded Image', use_column_width=True)
 
-                # Here you can process the form data, e.g., save it to a file or send an email
+                # Display form data
                 st.write(f"Name: {name}")
                 st.write(f"Subject: {subject}")
                 st.write(f"Email: {email}")
