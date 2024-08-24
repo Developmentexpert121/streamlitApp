@@ -16,6 +16,58 @@ def load_css():
 
 # Call the function to load CSS
 load_css()
+st.markdown(
+    
+    """
+    <style>
+     
+    # MainMenu {visibility: hidden;}
+    header {visibility: hidden;}
+    footer {visibility: hidden;}
+       .header {
+        text-align: center;
+        color: darkblue;
+        font-size: 36px;
+        margin-bottom: 20px;
+    }
+   .header {
+    background-color: #09241f;
+    border-bottom: 2px solid #333;
+    padding: 10px;
+    text-align: center;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    left: 0;
+}
+    .header h1 {
+        color: #333;
+        font-family: 'Arial', sans-serif;
+        font-size: 36px;
+        margin: 0;
+    }
+   
+    </style>
+     
+    """,
+    
+    unsafe_allow_html=True
+    
+    
+)
+st.markdown(
+    
+    """
+ <div class="header">
+      <button class="sign-btn">sign in</button>
+    </div>
+     
+    """,
+    
+    unsafe_allow_html=True
+)
+
+    
 
 # Define your functions or content for each page
 def render_home_page():
@@ -306,8 +358,21 @@ def render_faq_page():
     unsafe_allow_html=True)
 
 def render_contact_page():
-    st.write=st.markdown ("""<h1><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="35" height="35" x="0" y="0" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path fill-rule="evenodd" d="M189.279 107.079h284.235L304.693 222.812l-114.834-78.723c4.372-11.707 4.409-24.94-.58-37.01zm-74.337 67.172 41.43-25.226c12.295-7.486 16.376-23.458 9.178-35.925l-37.403-64.784c-3.837-6.647-9.645-10.923-17.131-12.613-7.487-1.691-14.567-.326-20.889 4.027L21.915 86.694C-10.554 201.098 135.355 448.778 247.259 477l74.778-35.591c6.93-3.298 11.653-8.748 13.932-16.077s1.48-14.496-2.358-21.143l-37.403-64.784c-7.197-12.467-23.07-16.919-35.701-10.014l-42.561 23.266c-42.09-37.433-91.63-123.238-103.004-178.406zm379.216-52.288L311.443 247.221c-4.275 2.918-9.768 2.69-13.741-.165l-121.3-83.155a50.509 50.509 0 0 1-7.549 5.624l-26.204 15.954c13.767 44.43 47.832 103.432 79.426 137.569l26.919-14.716c24.052-13.148 54.292-4.666 67.997 19.073l23.196 40.176h135.108c10.668 0 19.396-8.728 19.396-19.396v-221.71a19.25 19.25 0 0 0-.533-4.512z" clip-rule="evenodd" fill="#307f71" opacity="1" data-original="#000000" class=""></path></g></svg> Get in Touch With Us</h1>""",
-        unsafe_allow_html=True)
+    # Header with SVG icon
+    st.markdown(
+        """
+        <h1>
+            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="35" height="35" x="0" y="0" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512" xml:space="preserve" class="">
+                <g>
+                    <path fill-rule="evenodd" d="M189.279 107.079h284.235L304.693 222.812l-114.834-78.723c4.372-11.707 4.409-24.94-.58-37.01zm-74.337 67.172 41.43-25.226c12.295-7.486 16.376-23.458 9.178-35.925l-37.403-64.784c-3.837-6.647-9.645-10.923-17.131-12.613-7.487-1.691-14.567-.326-20.889 4.027L21.915 86.694C-10.554 201.098 135.355 448.778 247.259 477l74.778-35.591c6.93-3.298 11.653-8.748 13.932-16.077s1.48-14.496-2.358-21.143l-37.403-64.784c-7.197-12.467-23.07-16.919-35.701-10.014l-42.561 23.266c-42.09-37.433-91.63-123.238-103.004-178.406zm379.216-52.288L311.443 247.221c-4.275 2.918-9.768 2.69-13.741-.165l-121.3-83.155a50.509 50.509 0 0 1-7.549 5.624l-26.204 15.954c13.767 44.43 47.832 103.432 79.426 137.569l26.919-14.716c24.052-13.148 54.292-4.666 67.997 19.073l23.196 40.176h135.108c10.668 0 19.396-8.728 19.396-19.396v-221.71a19.25 19.25 0 0 0-.533-4.512z" clip-rule="evenodd" fill="#307f71" opacity="1" data-original="#000000" class=""></path>
+                </g>
+            </svg> Get in Touch With Us
+        </h1>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # Custom styles
     st.markdown(
         """
         <style>
@@ -338,7 +403,12 @@ def render_contact_page():
         </style>
         """, unsafe_allow_html=True
     )
-    st.markdown("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.")
+
+    # Information text
+    st.markdown(
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+    )
+
     # Form container
     with st.form(key='contact_form'):
         # Name field
@@ -375,12 +445,17 @@ def render_contact_page():
                     files = {'file': (uploaded_file.name, uploaded_file, uploaded_file.type)}
 
                 # Send data to API
-                response = requests.post('http://streamlit.devexhub.com/contact', data=form_data, files=files)
-                
-                if response.status_code == 200:
-                    st.success("Form submitted successfully!")
-                else:
-                    st.error("Failed to submit form. Please try again later.")
+                try:
+                    response = requests.post('http://streamlit.devexhub.com/contact', data=form_data, files=files)
+                    response.raise_for_status()  # Raise an error for bad status codes
+
+                    if response.status_code == 200:
+                        st.success("Form submitted successfully!")
+                    else:
+                        st.error(f"Failed to submit form. Status code: {response.status_code}")
+
+                except requests.exceptions.RequestException as e:
+                    st.error(f"An error occurred: {e}")
 
                 # Display uploaded image if any
                 if uploaded_file is not None:
@@ -393,7 +468,6 @@ def render_contact_page():
                 st.write(f"Message: {message}")
             else:
                 st.error("Please fill out all fields.")
-
 def render_about_page():
     st.write=st.markdown ("""<h1><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="35" height="35" x="0" y="0" viewBox="0 0 25 25" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path d="M21.1.5H3.9C2 .5.5 2 .5 3.9V21c0 1.9 1.5 3.4 3.4 3.4H21c1.9 0 3.4-1.5 3.4-3.4V3.9C24.5 2 23 .5 21.1.5zm-12.3 3c1.6 0 2.8 1.3 2.8 2.8 0 1.6-1.3 2.8-2.8 2.8S6 7.9 6 6.3c0-1.5 1.3-2.8 2.8-2.8zM6 20.6h-.7c-.5 0-1-.5-1-1s.5-1 1-1H6c.5 0 1 .5 1 1s-.5 1-1 1zm4.6 0h-.7c-.5 0-1-.5-1-1s.5-1 1-1h.7c.6 0 1 .5 1 1s-.5 1-1 1zm-5.8-4.9c-.7 0-1.2-.7-1-1.4.4-1.6 1.7-3 3.3-3.5.5.2 1.1.3 1.7.3s1.2-.1 1.7-.3c.8.2 1.4.7 2 1.2.6.6 1.1 1.4 1.3 2.3.2.7-.3 1.4-1 1.4zm10.3 4.9h-.7c-.5 0-1-.5-1-1s.5-1 1-1h.7c.5 0 1 .5 1 1s-.4 1-1 1zm4.6 0H19c-.5 0-1-.5-1-1s.5-1 1-1h.7c.5 0 1 .5 1 1s-.4 1-1 1zm1-8.5h-4c-.5 0-1-.5-1-1 0-.6.5-1 1-1h4c.6 0 1 .4 1 1 0 .5-.5 1-1 1zm0-4h-4c-.5 0-1-.4-1-1 0-.5.5-1 1-1h4c.6 0 1 .5 1 1 0 .6-.5 1-1 1z" fill="#307f71" opacity="1" data-original="#000000" class=""></path></g></svg> About Us</h1>""",
         unsafe_allow_html=True)
@@ -415,100 +489,100 @@ def render_about_page():
         <li>Fusce eget diam aliquam, tempor augue vel, placerat lacus.</li>
     </ul>""", unsafe_allow_html=True)
 
-def render_signin_page():
-    # Inject custom CSS
-    st.markdown(
-        """
-        <style>
-        [data-testid="stVerticalBlock"] {
-            max-width: 600px;
-            margin: auto;
-        }
-        p, h1, h2, h3, h4, h5, h6, div, body {
-            color: #fff;
-        }
-        .google-signin-btn {
-            border: 0;
-            padding: 10px 20px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            margin-inline: auto;
-            background: #fff;
-            color: #000;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .google-signin-btn svg {
-            fill: #000;
-            margin-right: 8px;
-        }
-        .signin-content {
-        text-align:center;}
-        [data-testid="stMarkdownContainer"] {
-            margin-bottom:0;
-        }
-        [data-testid="stForm"] {
-            background: #09241f;
-            border-radius: 20px;
-            padding: 25px;
-        }
-        .term-privacy-links {
-            margin-top: 30px
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+# def render_signin_page():
+#     # Inject custom CSS
+#     st.markdown(
+#         """
+#         <style>
+#         [data-testid="stVerticalBlock"] {
+#             max-width: 600px;
+#             margin: auto;
+#         }
+#         p, h1, h2, h3, h4, h5, h6, div, body {
+#             color: #fff;
+#         }
+#         .google-signin-btn {
+#             border: 0;
+#             padding: 10px 20px;
+#             border-radius: 10px;
+#             display: flex;
+#             align-items: center;
+#             margin-inline: auto;
+#             background: #fff;
+#             color: #000;
+#             cursor: pointer;
+#             font-size: 16px;
+#         }
+#         .google-signin-btn svg {
+#             fill: #000;
+#             margin-right: 8px;
+#         }
+#         .signin-content {
+#         text-align:center;}
+#         [data-testid="stMarkdownContainer"] {
+#             margin-bottom:0;
+#         }
+#         [data-testid="stForm"] {
+#             background: #09241f;
+#             border-radius: 20px;
+#             padding: 25px;
+#         }
+#         .term-privacy-links {
+#             margin-top: 30px
+#         }
+#         </style>
+#         """,
+#         unsafe_allow_html=True
+#     )
 
-    # st.title("Sign In")
+#     # st.title("Sign In")
 
-    # Create a placeholder for the button
-    placeholder = st.empty()
+#     # Create a placeholder for the button
+#     placeholder = st.empty()
 
-    # Insert a form in the container
-    with placeholder.form("login"):
-        # Add the SVG directly to the button
-        st.markdown (
-            """
-            <div class="signin-content">
-                <h2>Welcome to Stramlit</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-            </div>
+#     # Insert a form in the container
+#     with placeholder.form("login"):
+#         # Add the SVG directly to the button
+#         st.markdown (
+#             """
+#             <div class="signin-content">
+#                 <h2>Welcome to Stramlit</h2>
+#                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+#             </div>
 
-            """
-        , unsafe_allow_html=True)
-        st.markdown(
-            """
-            <button type="submit" class="google-signin-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" x="0" y="0" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512" xml:space="preserve" class="icon">
-                    <g>
-                        <path d="m492.668 211.489-208.84-.01c-9.222 0-16.697 7.474-16.697 16.696v66.715c0 9.22 7.475 16.696 16.696 16.696h117.606c-12.878 33.421-36.914 61.41-67.58 79.194L384 477.589c80.442-46.523 128-128.152 128-219.53 0-13.011-.959-22.312-2.877-32.785-1.458-7.957-8.366-13.785-16.455-13.785z" style="" fill="#167ee6" data-original="#167ee6" class=""></path>
-                        <path d="M256 411.826c-57.554 0-107.798-31.446-134.783-77.979l-86.806 50.034C78.586 460.443 161.34 512 256 512c46.437 0 90.254-12.503 128-34.292v-.119l-50.147-86.81c-22.938 13.304-49.482 21.047-77.853 21.047z" style="" fill="#12b347" data-original="#12b347"></path>
-                        <path d="M384 477.708v-.119l-50.147-86.81c-22.938 13.303-49.48 21.047-77.853 21.047V512c46.437 0 90.256-12.503 128-34.292z" style="" fill="#0f993e" data-original="#0f993e"></path>
-                        <path d="M100.174 256c0-28.369 7.742-54.91 21.043-77.847l-86.806-50.034C12.502 165.746 0 209.444 0 256s12.502 90.254 34.411 127.881l86.806-50.034c-13.301-22.937-21.043-49.478-21.043-77.847z" style="" fill="#ffd500" data-original="#ffd500"></path>
-                        <path d="M256 100.174c37.531 0 72.005 13.336 98.932 35.519 6.643 5.472 16.298 5.077 22.383-1.008l47.27-47.27c6.904-6.904 6.412-18.205-.963-24.603C378.507 23.673 319.807 0 256 0 161.34 0 78.586 51.557 34.411 128.119l86.806 50.034c26.985-46.533 77.229-77.979 134.783-77.979z" style="" fill="#ff4b26" data-original="#ff4b26"></path>
-                        <path d="M354.932 135.693c6.643 5.472 16.299 5.077 22.383-1.008l47.27-47.27c6.903-6.904 6.411-18.205-.963-24.603C378.507 23.672 319.807 0 256 0v100.174c37.53 0 72.005 13.336 98.932 35.519z" style="" fill="#d93f21" data-original="#d93f21"></path>
-                    </g>
-                </svg>
-                <span>Sign in with Google</span>
-            </button>
-            <div class="signin-content term-privacy-links">
-                <p>By registration you agree to <a href="#">Term of Use</a> and <a href="#">Privacy Policy</a>.</p>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-        st.markdown (
-            """
+#             """
+#         , unsafe_allow_html=True)
+#         st.markdown(
+#             """
+#             <button type="submit" class="google-signin-btn">
+#                 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" x="0" y="0" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512" xml:space="preserve" class="icon">
+#                     <g>
+#                         <path d="m492.668 211.489-208.84-.01c-9.222 0-16.697 7.474-16.697 16.696v66.715c0 9.22 7.475 16.696 16.696 16.696h117.606c-12.878 33.421-36.914 61.41-67.58 79.194L384 477.589c80.442-46.523 128-128.152 128-219.53 0-13.011-.959-22.312-2.877-32.785-1.458-7.957-8.366-13.785-16.455-13.785z" style="" fill="#167ee6" data-original="#167ee6" class=""></path>
+#                         <path d="M256 411.826c-57.554 0-107.798-31.446-134.783-77.979l-86.806 50.034C78.586 460.443 161.34 512 256 512c46.437 0 90.254-12.503 128-34.292v-.119l-50.147-86.81c-22.938 13.304-49.482 21.047-77.853 21.047z" style="" fill="#12b347" data-original="#12b347"></path>
+#                         <path d="M384 477.708v-.119l-50.147-86.81c-22.938 13.303-49.48 21.047-77.853 21.047V512c46.437 0 90.256-12.503 128-34.292z" style="" fill="#0f993e" data-original="#0f993e"></path>
+#                         <path d="M100.174 256c0-28.369 7.742-54.91 21.043-77.847l-86.806-50.034C12.502 165.746 0 209.444 0 256s12.502 90.254 34.411 127.881l86.806-50.034c-13.301-22.937-21.043-49.478-21.043-77.847z" style="" fill="#ffd500" data-original="#ffd500"></path>
+#                         <path d="M256 100.174c37.531 0 72.005 13.336 98.932 35.519 6.643 5.472 16.298 5.077 22.383-1.008l47.27-47.27c6.904-6.904 6.412-18.205-.963-24.603C378.507 23.673 319.807 0 256 0 161.34 0 78.586 51.557 34.411 128.119l86.806 50.034c26.985-46.533 77.229-77.979 134.783-77.979z" style="" fill="#ff4b26" data-original="#ff4b26"></path>
+#                         <path d="M354.932 135.693c6.643 5.472 16.299 5.077 22.383-1.008l47.27-47.27c6.903-6.904 6.411-18.205-.963-24.603C378.507 23.672 319.807 0 256 0v100.174c37.53 0 72.005 13.336 98.932 35.519z" style="" fill="#d93f21" data-original="#d93f21"></path>
+#                     </g>
+#                 </svg>
+#                 <span>Sign in with Google</span>
+#             </button>
+#             <div class="signin-content term-privacy-links">
+#                 <p>By registration you agree to <a href="#">Term of Use</a> and <a href="#">Privacy Policy</a>.</p>
+#             </div>
+#             """,
+#             unsafe_allow_html=True
+#         )
+#         st.markdown (
+#             """
             
 
-            """
-        , unsafe_allow_html=True)
-        # Handle form submission
-        # submit = st.form_submit_button("Sign in with Google")
-        # if submit:
-        #     st.warning("Google sign-in is not yet implemented.")
+#             """
+#         , unsafe_allow_html=True)
+#         # Handle form submission
+#         # submit = st.form_submit_button("Sign in with Google")
+#         # if submit:
+#         #     st.warning("Google sign-in is not yet implemented.")
 
 
 load_dotenv()
@@ -586,7 +660,7 @@ with st.sidebar:
             "📄 FAQ",
             "📑 Contact",
             "📊 About Us",
-            "📊 Signin"
+            
         ]
     )
 
@@ -665,7 +739,7 @@ pages = {
     "📄 FAQ": render_faq_page,
     "📑 Contact": render_contact_page,
     "📊 About Us": render_about_page,
-    "📊 Signin": render_signin_page
+  
 }
 # Content rendering based on the selected menu item
 if menu == "🏠 Home":
@@ -676,8 +750,7 @@ elif menu == "📑 Contact":
     render_contact_page()
 elif menu == "📊 About Us":
     render_about_page()
-elif menu == "📊 Signin":
-    render_signin_page()
+
 # Search Mode descriptions
 
 bm25_gql = """
