@@ -34,6 +34,7 @@ google = oauth.remote_app(
     access_token_url='https://accounts.google.com/o/oauth2/token',
     authorize_url='https://accounts.google.com/o/oauth2/auth',
     access_token_method='POST',
+    
 )
 
 
@@ -48,10 +49,12 @@ class User(db.Model):
     
 @app.route('/')
 def index():
+    print(url_for('login'))
     return redirect(url_for('login'))
 
 @app.route('/login')
 def login():
+    print(url_for('login'))
     return google.authorize(callback=url_for('authorized', _external=True))
 
 @app.route('/logout')

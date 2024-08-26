@@ -44,6 +44,7 @@ st.markdown(
     top: 0;
     width: 100%;
     left: 0;
+    z-index: 9;
 }
     .header h1 {
         color: #333;
