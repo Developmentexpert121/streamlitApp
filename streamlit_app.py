@@ -12,18 +12,19 @@ from urllib.parse import urlparse, parse_qs
 
 # Everything is accessible via the st.secrets dict:
 # st.write("WEAVIATE_URL:", st.secrets["WEAVIATE_URL"])
-api_key = st.secrets["WEAVIATE_URL"]
-print(api_key)
+WEAVIATE_URL_key = st.secrets["WEAVIATE_URL"]
+WEAVIATE_API_KEY_key = st.secrets["WEAVIATE_API_KEY"]
+OPENAI_key = st.secrets["OPENAI_KEY"]
 # st.write("WEAVIATE_API_KEY:", st.secrets["WEAVIATE_API_KEY"])
 # st.write("OPENAI_KEY:", st.secrets["OPENAI_KEY"])
 
 # And the root-level secrets are also accessible as environment variables:
-# st.write(
-#     "Has environment variables been set:",
-#     os.environ["WEAVIATE_URL"] == st.secrets["WEAVIATE_URL"],
-#     os.environ["WEAVIATE_API_KEY"] == st.secrets["WEAVIATE_API_KEY"],
-#     os.environ["OPENAI_KEY"] == st.secrets["OPENAI_KEY"],
-# )
+st.write(
+    "Has environment variables been set:",
+    os.environ["WEAVIATE_URL"] == WEAVIATE_URL_key,
+    os.environ["WEAVIATE_API_KEY"] == WEAVIATE_API_KEY_key,
+    os.environ["OPENAI_KEY"] == OPENAI_key,
+)
 # Load external CSS
 def load_css():
     with open("styles.css") as f:
