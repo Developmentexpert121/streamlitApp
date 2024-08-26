@@ -97,7 +97,8 @@ else:
 # Define your functions or content for each page
 def render_home_page():
     # Title
-    st.title("🔮 Magic Chat")
+    print(api_key)
+    st.title("🔮" ,api_key)
     # Information
     with st.expander("Built with Weaviate for the Streamlit Hackathon 2023"):
         st.subheader("Streamlit Hackathon 2023")
