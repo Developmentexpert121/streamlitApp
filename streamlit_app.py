@@ -10,6 +10,18 @@ import numpy as np
 import requests
 from urllib.parse import urlparse, parse_qs
 
+# Everything is accessible via the st.secrets dict:
+st.write("WEAVIATE_URL:", st.secrets["WEAVIATE_URL"])
+st.write("WEAVIATE_API_KEY:", st.secrets["WEAVIATE_API_KEY"])
+st.write("OPENAI_KEY:", st.secrets["OPENAI_KEY"])
+
+# And the root-level secrets are also accessible as environment variables:
+st.write(
+    "Has environment variables been set:",
+    os.environ["WEAVIATE_URL"] == st.secrets["WEAVIATE_URL"],
+    os.environ["WEAVIATE_API_KEY"] == st.secrets["WEAVIATE_API_KEY"],
+    os.environ["OPENAI_KEY"] == st.secrets["OPENAI_KEY"],
+)
 # Load external CSS
 def load_css():
     with open("styles.css") as f:
