@@ -12,19 +12,19 @@ from urllib.parse import urlparse, parse_qs
 
 # Everything is accessible via the st.secrets dict:
 # st.write("WEAVIATE_URL:", st.secrets["WEAVIATE_URL"])
-WEAVIATE_URL_key = st.secrets["WEAVIATE_URL"]
-WEAVIATE_API_KEY_key = st.secrets["WEAVIATE_API_KEY"]
-OPENAI_key = st.secrets["OPENAI_KEY"]
+# WEAVIATE_URL_key = st.secrets["WEAVIATE_URL"]
+# WEAVIATE_API_KEY_key = st.secrets["WEAVIATE_API_KEY"]
+# OPENAI_key = st.secrets["OPENAI_KEY"]
 # st.write("WEAVIATE_API_KEY:", st.secrets["WEAVIATE_API_KEY"])
 # st.write("OPENAI_KEY:", st.secrets["OPENAI_KEY"])
 
 # And the root-level secrets are also accessible as environment variables:
-st.write(
-    "Has environment variables been set:",
-    os.environ["WEAVIATE_URL"] == WEAVIATE_URL_key,
-    os.environ["WEAVIATE_API_KEY"] == WEAVIATE_API_KEY_key,
-    os.environ["OPENAI_KEY"] == OPENAI_key,
-)
+# st.write(
+#     "Has environment variables been set:",
+#     os.environ["WEAVIATE_URL"] == WEAVIATE_URL_key,
+#     os.environ["WEAVIATE_API_KEY"] == WEAVIATE_API_KEY_key,
+#     os.environ["OPENAI_KEY"] == OPENAI_key,
+# )
 # Load external CSS
 def load_css():
     with open("styles.css") as f:
@@ -653,9 +653,9 @@ def display_chat_messages() -> None:
 
 # Environment variables
 env_vars = get_env_vars(ENV_VARS)
-url = env_vars["WEAVIATE_URL"]
-api_key = env_vars["WEAVIATE_API_KEY"]
-openai_key = os.getenv("OPENAI_KEY")
+url = st.secrets["WEAVIATE_URL"]
+api_key = st.secrets["WEAVIATE_API_KEY"]
+openai_key = st.secrets["OPENAI_KEY"]
 
 # Check keys
 if url == "" or api_key == "" or openai_key == "":
@@ -668,9 +668,9 @@ if url == "" or api_key == "" or openai_key == "":
 conn = st.connection(
     "weaviate",
     type=WeaviateConnection,
-    url=os.getenv("WEAVIATE_URL"),
-    api_key=os.getenv("WEAVIATE_API_KEY"),
-    additional_headers={"X-OpenAI-Api-Key": openai_key},
+    url=st.secrets["WEAVIATE_URL"],
+    api_key=st.secrets["WEAVIATE_API_KEY"],
+    additional_headers={"X-OpenAI-Api-Key": st.secrets["OPENAI_KEY"]},
 )
 
 
