@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import pandas as pd
 import numpy as np
 import requests
+from urllib.parse import urlparse, parse_qs
 
 # Load external CSS
 def load_css():
@@ -16,6 +17,10 @@ def load_css():
 
 # Call the function to load CSS
 load_css()
+# Get query parameters from the URL
+query_params = st.query_params
+user_email_list = query_params.get("user_email", [])
+user_email = user_email_list if user_email_list else None
 st.markdown(
     
     """
@@ -55,19 +60,24 @@ st.markdown(
     
     
 )
-st.markdown(
-    
-    """
- <div class="header">
-      <button class="sign-btn">sign in</button>
-    </div>
-     
-    """,
-    
-    unsafe_allow_html=True
-)
-
-    
+# If user is authenticated, display their email
+if user_email:
+    st.markdown(
+        f"""
+        <div class="header">
+            <button class="sign-btn" disabled>Signed in as: {user_email}</button>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+else:
+    st.markdown(
+        """
+        <div class="header">
+            <a class="sign-btn" href="https://streamlit.devexhub.com/" target="_blank" onclick="window.open(this.href, '_blank'); window.close(); return false;">Sign in with Google</a>
+        </div>
+        """,
+        unsafe_allow_html=True)
 
 # Define your functions or content for each page
 def render_home_page():
@@ -256,18 +266,18 @@ def render_home_page():
         images = []
         if prompt != "":
             query = prompt.strip().lower()
-            gql = mode_descriptions[mode][1].format(input=query, limit_card=limit)
+           
 
-            df = conn.query(gql, ttl=None)
+            df = conn.query(query,ttl=None)
 
             response = ""
             with st.chat_message("assistant"):
                 for index, row in df.iterrows():
                     if index == 0:
-                        if "_additional.generate.groupedResult" in row:
-                            first_response = row["_additional.generate.groupedResult"]
-                        else:
-                            first_response = f"Here are the results from the {mode} search:"
+                        
+                        first_response = row["_additional.generate.groupedResult"]
+                      
+                           
 
                         message_placeholder = st.empty()
                         full_response = ""
@@ -750,162 +760,6 @@ elif menu == "📑 Contact":
     render_contact_page()
 elif menu == "📊 About Us":
     render_about_page()
-
-# Search Mode descriptions
-
-bm25_gql = """
-        {{
-            Get {{
-                MagicChat_Card(limit: {limit_card}, bm25: {{ query: "{input}" }}) 
-                {{
-                    name
-                    card_id
-                    img
-                    mana_cost
-                    type
-                    mana_produced
-                    power
-                    toughness
-                    color
-                    keyword
-                    set
-                    rarity
-                    description
-                    _additional {{
-                        id
-                        distance
-                        vector
-                    }}
-                }}
-            }}
-        }}"""
-
-vector_gql = """
-        {{
-            Get {{
-                MagicChat_Card(limit: {limit_card}, nearText: {{ concepts: ["{input}"] }}) 
-                {{
-                    name
-                    card_id
-                    img
-                    mana_cost
-                    type
-                    mana_produced
-                    power
-                    toughness
-                    color
-                    keyword
-                    set
-                    rarity
-                    description
-                    _additional {{
-                        id
-                        distance
-                        vector
-                    }}
-                }}
-            }}
-        }}"""
-
-hybrid_gql = """
-        {{
-            Get {{
-                MagicChat_Card(limit: {limit_card}, hybrid: {{ query: "{input}" alpha:0.5 }}) 
-                {{
-                    name
-                    card_id
-                    img
-                    mana_cost
-                    type
-                    mana_produced
-                    power
-                    toughness
-                    color
-                    keyword
-                    set
-                    rarity
-                    description
-                    _additional {{
-                        id
-                        distance
-                        vector
-                    }}
-                }}
-            }}
-        }}"""
-
-generative_gql = """
-        {{
-            Get {{
-                MagicChat_Card(limit: {limit_card}, nearText: {{ concepts: ["{input}"] }})
-                {{
-                    name
-                    card_id
-                    img
-                    mana_cost
-                    type
-                    mana_produced
-                    power
-                    toughness
-                    color
-                    keyword
-                    set
-                    rarity
-                    description
-                    _additional {{
-                        generate(
-                            groupedResult: {{
-                                task: "Based on the Magic The Gathering Cards, which one would you recommend and why. Use the context of the user query: {input}"
-                            }}
-                        ) {{
-                        groupedResult
-                        error
-                        }}
-                        id
-                        distance
-                        vector
-                    }}
-                }}
-            }}
-        }}"""
-
-mode_descriptions = {
-    "BM25": [
-        "BM25 is a method used by search engines to rank documents based on their relevance to a given query, factoring in both the frequency of keywords and the length of the document.",
-        bm25_gql,
-        30,
-    ],
-    "Vector": [
-        "Vector search is a method used by search engines to find and rank results based on their similarity to your search query. Instead of just matching keywords, it understands the context and meaning behind your search, offering more relevant and nuanced results.",
-        vector_gql,
-        15,
-    ],
-    "Hybrid": [
-        "Hybrid search combines vector and BM25 methods to offer better search results. It leverages the precision of BM25's keyword-based ranking with vector search's ability to understand context and semantic meaning. Providing results that are both directly relevant to the query and contextually related.",
-        hybrid_gql,
-        15,
-    ],
-    "Generative": [
-        "Generative search is an advanced method that combines information retrieval with AI language models. After finding relevant documents using search techniques like vector and BM25, the found information is used as an input to a language model, which generates further contextually related information.",
-        generative_gql,
-        9,
-    ],
-}
-
-
-
-# User Configuration Sidebar
-with st.sidebar:
-    mode = st.radio(
-        "Search Mode", options=["BM25", "Vector", "Hybrid", "Generative"], index=3
-    )
-    limit = st.slider(
-        label="Number of cards",
-        min_value=1,
-        max_value=mode_descriptions[mode][2],
-        value=6,
-    )
-    st.info(mode_descriptions[mode][0])
 
 st.divider()
 

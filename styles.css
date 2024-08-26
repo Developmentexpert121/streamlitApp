@@ -391,7 +391,23 @@ input[type="text"] {
   background: #0f352e !important;
   margin-top: 10px;
 }
-
+[data-testid="column"] div {
+  height: 100% !important;
+}
+.sign-btn {
+  background-color: #307f71; /* Google Blue */
+  color: white !important;
+  border: none;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+  text-decoration: none !important;
+}
 @media (max-width: 767.98px) {
   div[data-modal-container="true"] {
     height: 100%;
