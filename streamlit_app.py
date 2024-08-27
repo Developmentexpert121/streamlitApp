@@ -9,7 +9,9 @@ import pandas as pd
 import numpy as np
 import requests
 from urllib.parse import urlparse, parse_qs
-
+# Constants
+ENV_VARS = ["WEAVIATE_URL", "WEAVIATE_API_KEY", "OPENAI_KEY"]
+NUM_IMAGES_PER_ROW = 1
 # Load external CSS
 def load_css():
     with open("styles.css") as f:
@@ -220,10 +222,25 @@ mode_descriptions = {
         9,
     ],
 }
+
+def display_chat_messages():
+    if "messages" in st.session_state:
+        for msg in st.session_state.messages:
+            role = msg["role"]
+            content = msg["content"]
+            if role == "user":
+                st.chat_message("user").markdown(content)
+            else:
+                st.chat_message("assistant").markdown(content)
+                # Display images if available
+                if "images" in msg:
+                    for img in msg["images"]:
+                        st.image(img, width=200)
+
 def render_home_page():
     # Title
     st.title("🔮 Magic Chat")
-    # Information
+
     with st.expander("Built with Weaviate for the Streamlit Hackathon 2023"):
         st.subheader("Streamlit Hackathon 2023")
         st.markdown(
@@ -338,30 +355,30 @@ def render_home_page():
     col1, col2, col3 = st.columns([0.2, 0.5, 0.2])
 
     col2.image("./img/anim.gif")
+
     # User Configuration Sidebar
     with st.sidebar:
         mode = st.radio(
             "Search Mode", options=["BM25", "Vector", "Hybrid", "Generative"], index=3
         )
-        
-            
         st.info(mode_descriptions[mode][0])
-       
-        limit = st.slider(  
+        limit = st.slider(
             label="Number of cards",
             min_value=1,
             max_value=mode_descriptions[mode][2],
             value=1,
         )
+        st.info(mode_descriptions[mode][0])
 
-        # st.divider()
-        # Initialize chat history
-        if "messages" not in st.session_state:
-            st.session_state.messages = []
-            st.session_state.greetings = False
+    st.divider()
 
-        # Display chat messages from history on app rerun
-        display_chat_messages()
+    # Initialize chat history
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+        st.session_state.greetings = False
+
+    # Display chat messages from history on app rerun
+    display_chat_messages()
 
     # Greet user
     if not st.session_state.greetings:
@@ -372,7 +389,7 @@ def render_home_page():
             st.session_state.messages.append({"role": "assistant", "content": intro})
             st.session_state.greetings = True
 
-        # Example prompts
+    # Example prompts
     example_prompts = [
         "You gain life and enemy loses life",
         "Vampires cards with flying ability",
@@ -462,8 +479,7 @@ def render_home_page():
                 st.session_state.messages.append(
                     {"role": "assistant", "content": response, "images": images}
                 )
-               # st.experimental_run()
-                
+               
 def render_faq_page():
     st.write=st.markdown ("""<h1><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="35" height="35" x="0" y="0" viewBox="0 0 64 64" style="enable-background:new 0 0 512 512;margin-right:5px;" xml:space="preserve" class=""><g><path d="M59.11 48.992c8.408-13.378 5.979-31.614-7.328-42.163-11.536-9.138-28.187-9.097-39.672.103-15.18 12.144-16.085 34.352-2.737 47.71 10.764 10.754 27.26 12.226 39.62 4.466l9.85 2.8c1.872.535 3.601-1.194 3.066-3.067zm-27.107 4.92a3.285 3.285 0 0 1-3.283-3.284 3.287 3.287 0 0 1 3.283-3.293 3.287 3.287 0 0 1 3.283 3.293 3.285 3.285 0 0 1-3.283 3.283zm7.389-22.065c-2.614 2.007-4.106 4.827-4.106 7.739v.216a3.287 3.287 0 0 1-3.283 3.293 3.287 3.287 0 0 1-3.283-3.293v-.216c0-4.97 2.429-9.684 6.669-12.946a5.543 5.543 0 0 0 2.171-4.487c-.041-2.933-2.552-5.444-5.485-5.485h-.072a5.479 5.479 0 0 0-3.9 1.605 5.502 5.502 0 0 0-1.657 3.952 3.279 3.279 0 0 1-3.283 3.283 3.272 3.272 0 0 1-3.283-3.283 12.04 12.04 0 0 1 3.612-8.634c2.326-2.295 5.454-3.5 8.675-3.49 6.504.093 11.866 5.455 11.959 11.96a12.206 12.206 0 0 1-4.734 9.786z" fill="#307f71" opacity="1" data-original="#000000" class=""></path></g></svg> Frequently Asked Questions</h1>""",
         unsafe_allow_html=True)
@@ -658,9 +674,7 @@ def render_about_page():
 
 load_dotenv()
 
-# Constants
-ENV_VARS = ["WEAVIATE_URL", "WEAVIATE_API_KEY", "OPENAI_KEY"]
-NUM_IMAGES_PER_ROW = 3
+
 
 # Functions
 def get_env_vars(env_vars: list) -> dict:
@@ -680,19 +694,19 @@ def get_env_vars(env_vars: list) -> dict:
     return env_vars
 
 
-def display_chat_messages() -> None:
-    """Print message history
-    @returns None
-    """
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
-            if "images" in message:
-                for i in range(0, len(message["images"]), NUM_IMAGES_PER_ROW):
-                    cols = st.columns(NUM_IMAGES_PER_ROW)
-                    for j in range(NUM_IMAGES_PER_ROW):
-                        if i + j < len(message["images"]):
-                            cols[j].image(message["images"][i + j], width=200)
+# def display_chat_messages() -> None:
+#     """Print message history
+#     @returns None
+#     """
+#     for message in st.session_state.messages:
+#         with st.chat_message(message["role"]):
+#             st.markdown(message["content"])
+#             if "images" in message:
+#                 for i in range(0, len(message["images"]), NUM_IMAGES_PER_ROW):
+#                     cols = st.columns(NUM_IMAGES_PER_ROW)
+#                     for j in range(NUM_IMAGES_PER_ROW):
+#                         if i + j < len(message["images"]):
+#                             cols[j].image(message["images"][i + j], width=200)
 
 
 # Environment variables
@@ -822,5 +836,4 @@ elif menu == "📑 Contact":
 elif menu == "📊 About Us":
     render_about_page()
 
-st.divider()
 

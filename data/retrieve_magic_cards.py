@@ -5,7 +5,6 @@ import json
 import requests
 import random
 import streamlit as st
-
 from wasabi import msg  # type: ignore[import]
 
 from dotenv import load_dotenv
@@ -15,22 +14,17 @@ load_dotenv()
 
 
 def get_card_details(card_name) -> dict:
-    """Retrieve information from the scryfall API about a card through its name
+    """Retrieve information from the Scryfall API about a card through its name.
     @parameter card_name : str - Card name
     @returns dict - A dictionary with the card information formatted to the correct Weaviate schema
     """
-    # Construct the URL for the API request
     url = f"https://api.scryfall.com/cards/named?fuzzy={card_name}"
-
-    # Send a GET request to the API
-    response = requests.get(url)
-
-    mana_dict = {"W": "White", "B": "Black", "R": "Red", "G": "Green", "U": "Blue"}
-
-    # If the request was successful, the status code will be 200
-    if response.status_code == 200:
-        # Parse the response as JSON
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an HTTPError for bad responses
         card_data = response.json()
+
+        mana_dict = {"W": "White", "B": "Black", "R": "Red", "G": "Green", "U": "Blue"}
 
         weaviate_object = {
             "name": card_data.get("name", "Unknown"),
@@ -60,44 +54,42 @@ def get_card_details(card_name) -> dict:
             )
         return weaviate_object
 
-    else:
+    except requests.RequestException as e:
+        msg.fail(f"Error retrieving card details: {e}")
         return None
 
 
 def add_card_to_weaviate(weaviate_obj: dict, client: weaviate.Client) -> None:
-    """Import a card object to Weaviate
-    @parameter weaviate_obj : diuct - Formatted dict with the same keys as the schema
+    """Import a card object to Weaviate.
+    @parameter weaviate_obj : dict - Formatted dict with the same keys as the schema
     @parameter client : weaviate.Client - Weaviate Client
     @returns None
     """
-    with client.batch as batch:
-        batch.batch_size = 1
-        client.batch.add_data_object(weaviate_obj, "MagicChat_Card")
-        msg.good(f"Imported {weaviate_obj['name']} to database")
+    try:
+        with client.batch as batch:
+            batch.batch_size = 10  # Adjust batch size as needed
+            batch.add_data_object(weaviate_obj, "MagicChat_Card")
+            msg.good(f"Imported {weaviate_obj['name']} to database")
+    except Exception as e:
+        msg.fail(f"Error adding card to Weaviate: {e}")
 
-
-url = st.secrets["WEAVIATE_URL"]
-api_key = st.secrets["WEAVIATE_API_KEY"]
-openai_key = st.secrets["OPENAI_KEY"]
 
 def main() -> None:
     msg.divider("Starting card retrieval")
 
     # Connect to Weaviate
-    url =st.secrets["WEAVIATE_URL"],
-    openai_key = st.secrets["OPENAI_KEY"]
-    auth_config = st.secrets["WEAVIATE_API_KEY"]
+    url = st.secrets.get("WEAVIATE_URL", "").strip()
+    api_key = st.secrets.get("WEAVIATE_API_KEY", "").strip()
+    openai_key = st.secrets.get("OPENAI_KEY", "").strip()
 
-    if openai_key == "" or url == "":
-        msg.fail("Environment Variables not set.")
-        msg.warn(f"URL: {url}")
-        msg.warn(f"OPENAI API KEY: {openai_key}")
+    if not url or not api_key or not openai_key:
+        msg.fail("Environment Variables not set properly.")
         return
 
     client = weaviate.Client(
         url=url,
         additional_headers={"X-OpenAI-Api-Key": openai_key},
-        auth_client_secret=auth_config,
+        auth_client_secret=api_key,
     )
 
     msg.good("Client connected to Weaviate Server")
@@ -123,14 +115,14 @@ def main() -> None:
     with open("all_cards.json", "r") as reader:
         all_cards = json.load(reader)["data"]
 
-    msg.info(f"{len(all_cards)-len(unique_cards)} Cards left to fetch")
+    msg.info(f"{len(all_cards) - len(unique_cards)} Cards left to fetch")
 
     random.shuffle(all_cards)
 
     for card_name in tqdm(all_cards):
         if card_name.lower().strip() not in unique_cards:
             card = get_card_details(card_name)
-            if card != None:
+            if card is not None:
                 add_card_to_weaviate(card, client)
         else:
             msg.info(f"Skipping {card_name}")
