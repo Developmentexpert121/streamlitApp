@@ -343,21 +343,10 @@ def render_home_page():
         mode = st.radio(
             "Search Mode", options=["BM25", "Vector", "Hybrid", "Generative"], index=3
         )
-        is_slider_visible = False
-        if is_slider_visible:
-            slider_value = st.slider("Select a value", min_value=0, max_value=100)
+        
             
             st.info(mode_descriptions[mode][0])
-        else:
-            st.markdown(
-                """
-                <style>
-                .css-1pahdxg { display: none; }
-                </style>
-                """,
-                unsafe_allow_html=True
-            )
-            st.write("")
+       
         limit = st.slider(  
             label="Number of cards",
             min_value=1,
