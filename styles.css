@@ -444,6 +444,18 @@ input[type="text"] {
 [data-testid="stSidebarUserContent"] .stSlider[data-testid="stSlider"] {
   display: none;
 }
+[data-testid="stChatInput"] [data-baseweb="textarea"] textarea::placeholder {
+  color: #e1e1e1;
+}
+[data-testid="stChatInput"] [data-baseweb="textarea"] textarea{
+caret-color: #fff;
+}
+[data-testid="stChatInput"] [data-baseweb="textarea"] textarea:focus::placeholder {
+  opacity: 0;
+}
+[data-testid="stSidebarUserContent"] [aria-label="Search Mode"] {
+  display: none;
+}
 @media (max-width: 767.98px) {
   div[data-modal-container="true"] {
     height: 100%;
@@ -458,4 +470,7 @@ input[type="text"] {
   div[data-modal-container="true"] {
     padding: 0 20px !important;
   }
+}
+.stAlert {
+  display: none;
 }

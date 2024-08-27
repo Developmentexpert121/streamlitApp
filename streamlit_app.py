@@ -723,7 +723,7 @@ conn = st.connection(
 with st.sidebar:
     st.title("Streamlit Chat")
     st.markdown(
-        """Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."""
+        """<p style="margin-bottom: 15px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>""", unsafe_allow_html=True
     )
     menu = st.radio(
         "Go to",
