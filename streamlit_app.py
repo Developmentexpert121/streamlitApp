@@ -223,20 +223,6 @@ mode_descriptions = {
     ],
 }
 
-def display_chat_messages():
-    if "messages" in st.session_state:
-        for msg in st.session_state.messages:
-            role = msg["role"]
-            content = msg["content"]
-            if role == "user":
-                st.chat_message("user").markdown(content)
-            else:
-                st.chat_message("assistant").markdown(content)
-                # Display images if available
-                if "images" in msg:
-                    for img in msg["images"]:
-                        st.image(img, width=200)
-
 def render_home_page():
     # Title
     st.title("🔮 Magic Chat")
@@ -694,19 +680,19 @@ def get_env_vars(env_vars: list) -> dict:
     return env_vars
 
 
-# def display_chat_messages() -> None:
-#     """Print message history
-#     @returns None
-#     """
-#     for message in st.session_state.messages:
-#         with st.chat_message(message["role"]):
-#             st.markdown(message["content"])
-#             if "images" in message:
-#                 for i in range(0, len(message["images"]), NUM_IMAGES_PER_ROW):
-#                     cols = st.columns(NUM_IMAGES_PER_ROW)
-#                     for j in range(NUM_IMAGES_PER_ROW):
-#                         if i + j < len(message["images"]):
-#                             cols[j].image(message["images"][i + j], width=200)
+def display_chat_messages() -> None:
+    """Print message history
+    @returns None
+    """
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+            if "images" in message:
+                for i in range(0, len(message["images"]), NUM_IMAGES_PER_ROW):
+                    cols = st.columns(NUM_IMAGES_PER_ROW)
+                    for j in range(NUM_IMAGES_PER_ROW):
+                        if i + j < len(message["images"]):
+                            cols[j].image(message["images"][i + j], width=200)
 
 
 # Environment variables
