@@ -345,7 +345,7 @@ def render_home_page():
         )
         
             
-            st.info(mode_descriptions[mode][0])
+        st.info(mode_descriptions[mode][0])
        
         limit = st.slider(  
             label="Number of cards",
