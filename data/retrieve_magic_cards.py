@@ -4,13 +4,14 @@ import os
 import json
 import requests
 import random
+import streamlit as st
 
 from wasabi import msg  # type: ignore[import]
 
 from dotenv import load_dotenv
 from tqdm import tqdm
 
-load_dotenv("../.env")
+load_dotenv()
 
 
 def get_card_details(card_name) -> dict:
@@ -75,13 +76,17 @@ def add_card_to_weaviate(weaviate_obj: dict, client: weaviate.Client) -> None:
         msg.good(f"Imported {weaviate_obj['name']} to database")
 
 
+url = st.secrets["WEAVIATE_URL"]
+api_key = st.secrets["WEAVIATE_API_KEY"]
+openai_key = st.secrets["OPENAI_KEY"]
+
 def main() -> None:
     msg.divider("Starting card retrieval")
 
     # Connect to Weaviate
-    url = os.environ.get("WEAVIATE_URL", "")
-    openai_key = os.environ.get("OPENAI_KEY", "")
-    auth_config = weaviate.AuthApiKey(api_key=os.environ.get("WEAVIATE_API_KEY", ""))
+    url =st.secrets["WEAVIATE_URL"],
+    openai_key = st.secrets["OPENAI_KEY"]
+    auth_config = st.secrets["WEAVIATE_API_KEY"]
 
     if openai_key == "" or url == "":
         msg.fail("Environment Variables not set.")

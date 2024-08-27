@@ -1,0 +1,145 @@
+[33mcommit f5e11a5e834c05c1202c1c6aa389ad3b2e59153b[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m
+Merge: 025de51 c536a09
+Author: developmentexpert121@gmail.com <developmentexpert121@gmail.com>
+Date:   Tue Aug 27 14:31:05 2024 +0530
+
+    streamlit: chatbot fixed
+
+[33mcommit 025de5145d50b0a09c6c1883fba2614d9423a0d2[m
+Author: developmentexpert121@gmail.com <developmentexpert121@gmail.com>
+Date:   Tue Aug 27 13:12:24 2024 +0530
+
+    Chatbot fixed
+
+[33mcommit c536a09bcf92b43cb84a683a0916ef45f6b24679[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Devex Hub <54986861+Developmentexpert121@users.noreply.github.com>
+Date:   Mon Aug 26 16:28:08 2024 +0530
+
+    Delete .streamlit/secrets.toml
+
+[33mcommit 1d24240c8da578584ecd1fa3f457c96e83eb27b7[m
+Author: developmentexpert121@gmail.com <developmentexpert121@gmail.com>
+Date:   Mon Aug 26 16:26:56 2024 +0530
+
+    add env
+
+[33mcommit 0b5ffc25e977d31052b2aefa1050fd1b9cd38706[m
+Author: developmentexpert121@gmail.com <developmentexpert121@gmail.com>
+Date:   Mon Aug 26 16:24:29 2024 +0530
+
+    env update
+
+[33mcommit 4d21231e808a652382a54f955cf237ee11183265[m
+Author: developmentexpert121@gmail.com <developmentexpert121@gmail.com>
+Date:   Mon Aug 26 16:09:18 2024 +0530
+
+    env updated
+
+[33mcommit c5e00673747fc46ae80af84cc7821735439caa26[m
+Author: developmentexpert121@gmail.com <developmentexpert121@gmail.com>
+Date:   Mon Aug 26 16:06:17 2024 +0530
+
+    Streamlit: Env changes
+
+[33mcommit 425a94c65a7a2f2056d53d465d6e5dfe478159fa[m
+Merge: 20dfafb a6d54e3
+Author: developmentexpert121@gmail.com <developmentexpert121@gmail.com>
+Date:   Mon Aug 26 16:00:27 2024 +0530
+
+    Merge branch 'main' of https://github.com/Developmentexpert121/streamlitApp
+
+[33mcommit 20dfafb0d6528f4c709268b95daceba83a5cef1f[m
+Author: developmentexpert121@gmail.com <developmentexpert121@gmail.com>
+Date:   Mon Aug 26 15:58:50 2024 +0530
+
+    Streamlit : env setup
+
+[33mcommit a6d54e3eed4c0a229e375fe850ae78ed6fe45ae2[m
+Author: Devex Hub <54986861+Developmentexpert121@users.noreply.github.com>
+Date:   Mon Aug 26 15:44:58 2024 +0530
+
+    Update .env
+
+[33mcommit b660c84e4af06bb18377fa810003c103c19148b6[m
+Author: developmentexpert121@gmail.com <developmentexpert121@gmail.com>
+Date:   Mon Aug 26 14:25:08 2024 +0530
+
+    Streamlit : UI-Design Modified
+
+[33mcommit dd88b373f8e430254707e5cbeeb0153396fe48c7[m
+Author: developmentexpert121@gmail.com <developmentexpert121@gmail.com>
+Date:   Mon Aug 26 12:04:09 2024 +0530
+
+    Streamlit:Sign In with Google
+
+[33mcommit 091e77099cf4358f6d82695842f0910821c0c3c2[m
+Author: developmentexpert121@gmail.com <developmentexpert121@gmail.com>
+Date:   Sat Aug 24 16:58:18 2024 +0530
+
+    Streamlit : UI Fixed
+
+[33mcommit e30c81b566a8a61fea8e230dbf9c38d59601c24b[m
+Author: developmentexpert121@gmail.com <developmentexpert121@gmail.com>
+Date:   Sat Aug 24 15:08:50 2024 +0530
+
+    Streamlit : Contact Us Mail
+
+[33mcommit 402ada686d10e9891b4dc6e4dc2d0870ee3930da[m
+Author: Devex Hub <54986861+Developmentexpert121@users.noreply.github.com>
+Date:   Sat Aug 24 11:03:12 2024 +0530
+
+    Update README.md
+
+[33mcommit 51b1aa2695f49616439156f44a4cda8be7140768[m
+Author: developmentexpert121@gmail.com <developmentexpert121@gmail.com>
+Date:   Fri Aug 23 19:43:08 2024 +0530
+
+    Streamlit : Ui Completed
+
+[33mcommit a3cb9dfe717f93820729dd2b36ef3ef3f51f3a18[m
+Author: developmentexpert121@gmail.com <developmentexpert121@gmail.com>
+Date:   Fri Aug 23 17:50:48 2024 +0530
+
+    Streamlit : Chatbot Button Added !
+
+[33mcommit ece689b7a45002858117990deb8f6ba0b1680ddc[m
+Author: developmentexpert121@gmail.com <developmentexpert121@gmail.com>
+Date:   Fri Aug 23 17:42:47 2024 +0530
+
+    Streamlit : Requirements.txt Modified
+
+[33mcommit 57fc73f1aa4b35ef77c9bbef0fca5677a0992f84[m
+Author: developmentexpert121@gmail.com <developmentexpert121@gmail.com>
+Date:   Fri Aug 23 17:15:19 2024 +0530
+
+    Streamlit : Code Repushed
+
+[33mcommit 95f6db1839b14f641968926247f420ce5a764415[m
+Author: developmentexpert121@gmail.com <developmentexpert121@gmail.com>
+Date:   Fri Aug 23 17:00:48 2024 +0530
+
+    Streamlit : Buttons Added
+
+[33mcommit 5009dbd9179fdbac21fa37fdef21397077c91f1b[m
+Author: Devex Hub <54986861+Developmentexpert121@users.noreply.github.com>
+Date:   Fri Aug 23 15:49:07 2024 +0530
+
+    Create .env
+
+[33mcommit ca4d454cbba4b4339a7020cfe768fc5beb5eca0c[m
+Author: Devex Hub <54986861+Developmentexpert121@users.noreply.github.com>
+Date:   Fri Aug 23 15:25:46 2024 +0530
+
+    Update README.md
+
+[33mcommit 77d8f09f255984ef0251bfc2e62cd53ff04c02c2[m
+Author: developmentexpert121@gmail.com <developmentexpert121@gmail.com>
+Date:   Fri Aug 23 15:22:58 2024 +0530
+
+    Streamlit:Chatbot
+
+[33mcommit 54b884b8e8b43a288e1135116bc2ceb6aa806440[m
+Author: Devex Hub <54986861+Developmentexpert121@users.noreply.github.com>
+Date:   Fri Aug 23 15:15:44 2024 +0530
+
+    Initial commit

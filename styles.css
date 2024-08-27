@@ -441,6 +441,9 @@ input[type="text"] {
   border-radius: 5px;
   text-decoration: none !important;
 }
+[data-testid="stSidebarUserContent"] .stSlider[data-testid="stSlider"] {
+  display: none;
+}
 @media (max-width: 767.98px) {
   div[data-modal-container="true"] {
     height: 100%;

@@ -6,7 +6,6 @@ from streamlit.connections import ExperimentalBaseConnection
 from streamlit.runtime.caching import cache_data
 from weaviate.client import Client
 
-
 class WeaviateConnection(ExperimentalBaseConnection["Client"]):
     def __init__(
         self,

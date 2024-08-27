@@ -10,20 +10,6 @@ import numpy as np
 import requests
 from urllib.parse import urlparse, parse_qs
 
-# Everything is accessible via the st.secrets dict:
-# st.write("WEAVIATE_URL:", st.secrets["WEAVIATE_URL"])
-api_key = st.secrets["WEAVIATE_URL"]
-print(api_key)
-# st.write("WEAVIATE_API_KEY:", st.secrets["WEAVIATE_API_KEY"])
-# st.write("OPENAI_KEY:", st.secrets["OPENAI_KEY"])
-
-# And the root-level secrets are also accessible as environment variables:
-# st.write(
-#     "Has environment variables been set:",
-#     os.environ["WEAVIATE_URL"] == st.secrets["WEAVIATE_URL"],
-#     os.environ["WEAVIATE_API_KEY"] == st.secrets["WEAVIATE_API_KEY"],
-#     os.environ["OPENAI_KEY"] == st.secrets["OPENAI_KEY"],
-# )
 # Load external CSS
 def load_css():
     with open("styles.css") as f:
@@ -94,11 +80,149 @@ else:
         """,
         unsafe_allow_html=True)
 
-# Define your functions or content for each page
+# Search Mode descriptions
+
+bm25_gql = """
+        {{
+            Get {{
+                MagicChat_Card(limit: {limit_card}, bm25: {{ query: "{input}" }}) 
+                {{
+                    name
+                    card_id
+                    img
+                    mana_cost
+                    type
+                    mana_produced
+                    power
+                    toughness
+                    color
+                    keyword
+                    set
+                    rarity
+                    description
+                    _additional {{
+                        id
+                        distance
+                        vector
+                    }}
+                }}
+            }}
+        }}"""
+
+vector_gql = """
+        {{
+            Get {{
+                MagicChat_Card(limit: {limit_card}, nearText: {{ concepts: ["{input}"] }}) 
+                {{
+                    name
+                    card_id
+                    img
+                    mana_cost
+                    type
+                    mana_produced
+                    power
+                    toughness
+                    color
+                    keyword
+                    set
+                    rarity
+                    description
+                    _additional {{
+                        id
+                        distance
+                        vector
+                    }}
+                }}
+            }}
+        }}"""
+
+hybrid_gql = """
+        {{
+            Get {{
+                MagicChat_Card(limit: {limit_card}, hybrid: {{ query: "{input}" alpha:0.5 }}) 
+                {{
+                    name
+                    card_id
+                    img
+                    mana_cost
+                    type
+                    mana_produced
+                    power
+                    toughness
+                    color
+                    keyword
+                    set
+                    rarity
+                    description
+                    _additional {{
+                        id
+                        distance
+                        vector
+                    }}
+                }}
+            }}
+        }}"""
+
+generative_gql = """
+        {{
+            Get {{
+                MagicChat_Card(limit: {limit_card}, nearText: {{ concepts: ["{input}"] }})
+                {{
+                    name
+                    card_id
+                    img
+                    mana_cost
+                    type
+                    mana_produced
+                    power
+                    toughness
+                    color
+                    keyword
+                    set
+                    rarity
+                    description
+                    _additional {{
+                        generate(
+                            groupedResult: {{
+                                task: "Based on the Magic The Gathering Cards, which one would you recommend and why. Use the context of the user query: {input}"
+                            }}
+                        ) {{
+                        groupedResult
+                        error
+                        }}
+                        id
+                        distance
+                        vector
+                    }}
+                }}
+            }}
+        }}"""
+
+mode_descriptions = {
+    "BM25": [
+        "BM25 is a method used by search engines to rank documents based on their relevance to a given query, factoring in both the frequency of keywords and the length of the document.",
+        bm25_gql,
+        30,
+    ],
+    "Vector": [
+        "Vector search is a method used by search engines to find and rank results based on their similarity to your search query. Instead of just matching keywords, it understands the context and meaning behind your search, offering more relevant and nuanced results.",
+        vector_gql,
+        15,
+    ],
+    "Hybrid": [
+        "Hybrid search combines vector and BM25 methods to offer better search results. It leverages the precision of BM25's keyword-based ranking with vector search's ability to understand context and semantic meaning. Providing results that are both directly relevant to the query and contextually related.",
+        hybrid_gql,
+        15,
+    ],
+    "Generative": [
+        "Generative search is an advanced method that combines information retrieval with AI language models. After finding relevant documents using search techniques like vector and BM25, the found information is used as an input to a language model, which generates further contextually related information.",
+        generative_gql,
+        9,
+    ],
+}
 def render_home_page():
     # Title
-    print(api_key)
-    st.title("🔮" ,api_key)
+    st.title("🔮 Magic Chat")
     # Information
     with st.expander("Built with Weaviate for the Streamlit Hackathon 2023"):
         st.subheader("Streamlit Hackathon 2023")
@@ -214,13 +338,41 @@ def render_home_page():
     col1, col2, col3 = st.columns([0.2, 0.5, 0.2])
 
     col2.image("./img/anim.gif")
-    # Initialize chat history
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
-        st.session_state.greetings = False
+    # User Configuration Sidebar
+    with st.sidebar:
+        mode = st.radio(
+            "Search Mode", options=["BM25", "Vector", "Hybrid", "Generative"], index=3
+        )
+        is_slider_visible = False
+        if is_slider_visible:
+            slider_value = st.slider("Select a value", min_value=0, max_value=100)
+            
+            st.info(mode_descriptions[mode][0])
+        else:
+            st.markdown(
+                """
+                <style>
+                .css-1pahdxg { display: none; }
+                </style>
+                """,
+                unsafe_allow_html=True
+            )
+            st.write("")
+        limit = st.slider(  
+            label="Number of cards",
+            min_value=1,
+            max_value=mode_descriptions[mode][2],
+            value=1,
+        )
 
-    # Display chat messages from history on app rerun
-    display_chat_messages()
+        # st.divider()
+        # Initialize chat history
+        if "messages" not in st.session_state:
+            st.session_state.messages = []
+            st.session_state.greetings = False
+
+        # Display chat messages from history on app rerun
+        display_chat_messages()
 
     # Greet user
     if not st.session_state.greetings:
@@ -231,7 +383,7 @@ def render_home_page():
             st.session_state.messages.append({"role": "assistant", "content": intro})
             st.session_state.greetings = True
 
-    # Example prompts
+        # Example prompts
     example_prompts = [
         "You gain life and enemy loses life",
         "Vampires cards with flying ability",
@@ -282,18 +434,18 @@ def render_home_page():
         images = []
         if prompt != "":
             query = prompt.strip().lower()
-           
+            gql = mode_descriptions[mode][1].format(input=query, limit_card=limit)
 
-            df = conn.query(query,ttl=None)
+            df = conn.query(gql, ttl=None)
 
             response = ""
             with st.chat_message("assistant"):
                 for index, row in df.iterrows():
                     if index == 0:
-                        
-                        first_response = row["_additional.generate.groupedResult"]
-                      
-                           
+                        if "_additional.generate.groupedResult" in row:
+                            first_response = row["_additional.generate.groupedResult"]
+                        else:
+                            first_response = f"Here are the results from the {mode} search:"
 
                         message_placeholder = st.empty()
                         full_response = ""
@@ -321,8 +473,8 @@ def render_home_page():
                 st.session_state.messages.append(
                     {"role": "assistant", "content": response, "images": images}
                 )
-                st.experimental_rerun()
-
+               # st.experimental_run()
+                
 def render_faq_page():
     st.write=st.markdown ("""<h1><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="35" height="35" x="0" y="0" viewBox="0 0 64 64" style="enable-background:new 0 0 512 512;margin-right:5px;" xml:space="preserve" class=""><g><path d="M59.11 48.992c8.408-13.378 5.979-31.614-7.328-42.163-11.536-9.138-28.187-9.097-39.672.103-15.18 12.144-16.085 34.352-2.737 47.71 10.764 10.754 27.26 12.226 39.62 4.466l9.85 2.8c1.872.535 3.601-1.194 3.066-3.067zm-27.107 4.92a3.285 3.285 0 0 1-3.283-3.284 3.287 3.287 0 0 1 3.283-3.293 3.287 3.287 0 0 1 3.283 3.293 3.285 3.285 0 0 1-3.283 3.283zm7.389-22.065c-2.614 2.007-4.106 4.827-4.106 7.739v.216a3.287 3.287 0 0 1-3.283 3.293 3.287 3.287 0 0 1-3.283-3.293v-.216c0-4.97 2.429-9.684 6.669-12.946a5.543 5.543 0 0 0 2.171-4.487c-.041-2.933-2.552-5.444-5.485-5.485h-.072a5.479 5.479 0 0 0-3.9 1.605 5.502 5.502 0 0 0-1.657 3.952 3.279 3.279 0 0 1-3.283 3.283 3.272 3.272 0 0 1-3.283-3.283 12.04 12.04 0 0 1 3.612-8.634c2.326-2.295 5.454-3.5 8.675-3.49 6.504.093 11.866 5.455 11.959 11.96a12.206 12.206 0 0 1-4.734 9.786z" fill="#307f71" opacity="1" data-original="#000000" class=""></path></g></svg> Frequently Asked Questions</h1>""",
         unsafe_allow_html=True)
@@ -515,102 +667,6 @@ def render_about_page():
         <li>Fusce eget diam aliquam, tempor augue vel, placerat lacus.</li>
     </ul>""", unsafe_allow_html=True)
 
-# def render_signin_page():
-#     # Inject custom CSS
-#     st.markdown(
-#         """
-#         <style>
-#         [data-testid="stVerticalBlock"] {
-#             max-width: 600px;
-#             margin: auto;
-#         }
-#         p, h1, h2, h3, h4, h5, h6, div, body {
-#             color: #fff;
-#         }
-#         .google-signin-btn {
-#             border: 0;
-#             padding: 10px 20px;
-#             border-radius: 10px;
-#             display: flex;
-#             align-items: center;
-#             margin-inline: auto;
-#             background: #fff;
-#             color: #000;
-#             cursor: pointer;
-#             font-size: 16px;
-#         }
-#         .google-signin-btn svg {
-#             fill: #000;
-#             margin-right: 8px;
-#         }
-#         .signin-content {
-#         text-align:center;}
-#         [data-testid="stMarkdownContainer"] {
-#             margin-bottom:0;
-#         }
-#         [data-testid="stForm"] {
-#             background: #09241f;
-#             border-radius: 20px;
-#             padding: 25px;
-#         }
-#         .term-privacy-links {
-#             margin-top: 30px
-#         }
-#         </style>
-#         """,
-#         unsafe_allow_html=True
-#     )
-
-#     # st.title("Sign In")
-
-#     # Create a placeholder for the button
-#     placeholder = st.empty()
-
-#     # Insert a form in the container
-#     with placeholder.form("login"):
-#         # Add the SVG directly to the button
-#         st.markdown (
-#             """
-#             <div class="signin-content">
-#                 <h2>Welcome to Stramlit</h2>
-#                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-#             </div>
-
-#             """
-#         , unsafe_allow_html=True)
-#         st.markdown(
-#             """
-#             <button type="submit" class="google-signin-btn">
-#                 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" x="0" y="0" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512" xml:space="preserve" class="icon">
-#                     <g>
-#                         <path d="m492.668 211.489-208.84-.01c-9.222 0-16.697 7.474-16.697 16.696v66.715c0 9.22 7.475 16.696 16.696 16.696h117.606c-12.878 33.421-36.914 61.41-67.58 79.194L384 477.589c80.442-46.523 128-128.152 128-219.53 0-13.011-.959-22.312-2.877-32.785-1.458-7.957-8.366-13.785-16.455-13.785z" style="" fill="#167ee6" data-original="#167ee6" class=""></path>
-#                         <path d="M256 411.826c-57.554 0-107.798-31.446-134.783-77.979l-86.806 50.034C78.586 460.443 161.34 512 256 512c46.437 0 90.254-12.503 128-34.292v-.119l-50.147-86.81c-22.938 13.304-49.482 21.047-77.853 21.047z" style="" fill="#12b347" data-original="#12b347"></path>
-#                         <path d="M384 477.708v-.119l-50.147-86.81c-22.938 13.303-49.48 21.047-77.853 21.047V512c46.437 0 90.256-12.503 128-34.292z" style="" fill="#0f993e" data-original="#0f993e"></path>
-#                         <path d="M100.174 256c0-28.369 7.742-54.91 21.043-77.847l-86.806-50.034C12.502 165.746 0 209.444 0 256s12.502 90.254 34.411 127.881l86.806-50.034c-13.301-22.937-21.043-49.478-21.043-77.847z" style="" fill="#ffd500" data-original="#ffd500"></path>
-#                         <path d="M256 100.174c37.531 0 72.005 13.336 98.932 35.519 6.643 5.472 16.298 5.077 22.383-1.008l47.27-47.27c6.904-6.904 6.412-18.205-.963-24.603C378.507 23.673 319.807 0 256 0 161.34 0 78.586 51.557 34.411 128.119l86.806 50.034c26.985-46.533 77.229-77.979 134.783-77.979z" style="" fill="#ff4b26" data-original="#ff4b26"></path>
-#                         <path d="M354.932 135.693c6.643 5.472 16.299 5.077 22.383-1.008l47.27-47.27c6.903-6.904 6.411-18.205-.963-24.603C378.507 23.672 319.807 0 256 0v100.174c37.53 0 72.005 13.336 98.932 35.519z" style="" fill="#d93f21" data-original="#d93f21"></path>
-#                     </g>
-#                 </svg>
-#                 <span>Sign in with Google</span>
-#             </button>
-#             <div class="signin-content term-privacy-links">
-#                 <p>By registration you agree to <a href="#">Term of Use</a> and <a href="#">Privacy Policy</a>.</p>
-#             </div>
-#             """,
-#             unsafe_allow_html=True
-#         )
-#         st.markdown (
-#             """
-            
-
-#             """
-#         , unsafe_allow_html=True)
-#         # Handle form submission
-#         # submit = st.form_submit_button("Sign in with Google")
-#         # if submit:
-#         #     st.warning("Google sign-in is not yet implemented.")
-
-
 load_dotenv()
 
 # Constants
@@ -652,9 +708,9 @@ def display_chat_messages() -> None:
 
 # Environment variables
 env_vars = get_env_vars(ENV_VARS)
-url = env_vars["WEAVIATE_URL"]
-api_key = env_vars["WEAVIATE_API_KEY"]
-openai_key = os.getenv("OPENAI_KEY")
+url = st.secrets["WEAVIATE_URL"]
+api_key = st.secrets["WEAVIATE_API_KEY"]
+openai_key = st.secrets["OPENAI_KEY"]
 
 # Check keys
 if url == "" or api_key == "" or openai_key == "":
@@ -667,9 +723,9 @@ if url == "" or api_key == "" or openai_key == "":
 conn = st.connection(
     "weaviate",
     type=WeaviateConnection,
-    url=os.getenv("WEAVIATE_URL"),
-    api_key=os.getenv("WEAVIATE_API_KEY"),
-    additional_headers={"X-OpenAI-Api-Key": openai_key},
+    url=st.secrets["WEAVIATE_URL"],
+    api_key=st.secrets["WEAVIATE_API_KEY"],
+    additional_headers={"X-OpenAI-Api-Key": st.secrets["OPENAI_KEY"]},
 )
 
 
