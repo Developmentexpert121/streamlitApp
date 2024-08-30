@@ -688,12 +688,19 @@ def display_chat_messages() -> None:
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
-            if "images" in message:
-                for i in range(0, len(message["images"]), NUM_IMAGES_PER_ROW):
-                    cols = st.columns(NUM_IMAGES_PER_ROW)
-                    for j in range(NUM_IMAGES_PER_ROW):
-                        if i + j < len(message["images"]):
-                            cols[j].image(message["images"][i + j], width=200)
+            # if "images" in message:
+            #     for i in range(0, len(message["images"]), NUM_IMAGES_PER_ROW):
+            #         cols = st.columns(NUM_IMAGES_PER_ROW)
+            #         for j in range(NUM_IMAGES_PER_ROW):
+            #             if i + j < len(message["images"]):
+            #                 cols[j].image(message["images"][i + j], width=200)
+        # with st.chat_message(message["role"]):
+        if "images" in message:
+            for i in range(0, len(message["images"]), NUM_IMAGES_PER_ROW):
+                cols = st.columns(NUM_IMAGES_PER_ROW)
+                for j in range(NUM_IMAGES_PER_ROW):
+                    if i + j < len(message["images"]):
+                        cols[j].image(message["images"][i + j], width=200)
 
 
 # Environment variables
