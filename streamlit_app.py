@@ -1,3 +1,4 @@
+import re
 from st_weaviate_connection import WeaviateConnection
 import streamlit as st
 import time
@@ -8,9 +9,12 @@ from dotenv import load_dotenv
 import pandas as pd
 import numpy as np
 import requests
+from openai import OpenAI
+
 from urllib.parse import urlparse, parse_qs
 # Constants
 ENV_VARS = ["WEAVIATE_URL", "WEAVIATE_API_KEY", "OPENAI_KEY"]
+client = OpenAI(api_key=st.secrets["OPENAI_KEY"])
 NUM_IMAGES_PER_ROW = 1
 # Load external CSS
 def load_css():
@@ -23,6 +27,8 @@ load_css()
 query_params = st.query_params
 user_email_list = query_params.get("user_email", [])
 user_email = user_email_list if user_email_list else None
+
+
 st.markdown(
     
     """
@@ -224,6 +230,24 @@ mode_descriptions = {
 }
 
 def render_home_page():
+     # Example prompts
+    example_prompts = [
+        "You gain life and enemy loses life",
+        "Vampires cards with flying ability",
+        "Blue and green colored sorcery cards",
+        "White card with protection from black",
+        # "The famous 'Black Lotus' card",
+        # "Wizard card with Vigiliance ability",
+    ]
+
+    example_prompts_help = [
+        "Look for a specific card effect",
+        "Search for card type: 'Vampires', card color: 'black', and ability: 'flying'",
+        "Color cards and card type",
+        "Specifc card effect to another mana color",
+        # "Search for card names",
+        # "Search for card types with specific abilities",
+    ]
     # Title
     st.title("🔮 Magic Chat")
 
@@ -375,45 +399,32 @@ def render_home_page():
             st.session_state.messages.append({"role": "assistant", "content": intro})
             st.session_state.greetings = True
 
-    # Example prompts
-    example_prompts = [
-        "You gain life and enemy loses life",
-        "Vampires cards with flying ability",
-        "Blue and green colored sorcery cards",
-        "White card with protection from black",
-        "The famous 'Black Lotus' card",
-        "Wizard card with Vigiliance ability",
-    ]
-
-    example_prompts_help = [
-        "Look for a specific card effect",
-        "Search for card type: 'Vampires', card color: 'black', and ability: 'flying'",
-        "Color cards and card type",
-        "Specifc card effect to another mana color",
-        "Search for card names",
-        "Search for card types with specific abilities",
-    ]
-
-    button_cols = st.columns(3)
-    button_cols_2 = st.columns(3)
+    button_cols = st.columns(2)
+    button_cols_2 = st.columns(2)
 
     button_pressed = ""
+    if 'example_prompts' not in st.session_state:
+        st.session_state.example_prompts = example_prompts
+    if 'example_prompts_help' not in st.session_state:
+        st.session_state.example_prompts_help = example_prompts_help
+    
+    # Retrieve prompts from session state
+    example_prompts = st.session_state.example_prompts
+    example_prompts_help = st.session_state.example_prompts_help
 
     if button_cols[0].button(example_prompts[0], help=example_prompts_help[0]):
         button_pressed = example_prompts[0]
     elif button_cols[1].button(example_prompts[1], help=example_prompts_help[1]):
         button_pressed = example_prompts[1]
-    elif button_cols[2].button(example_prompts[2], help=example_prompts_help[2]):
+    elif button_cols_2[0].button(example_prompts[2], help=example_prompts_help[2]):
         button_pressed = example_prompts[2]
 
-    elif button_cols_2[0].button(example_prompts[3], help=example_prompts_help[3]):
+    elif button_cols_2[1].button(example_prompts[3], help=example_prompts_help[3]):
         button_pressed = example_prompts[3]
-    elif button_cols_2[1].button(example_prompts[4], help=example_prompts_help[4]):
-        button_pressed = example_prompts[4]
-    elif button_cols_2[2].button(example_prompts[5], help=example_prompts_help[5]):
-        button_pressed = example_prompts[5]
-
-
+    # elif button_cols_2[1].button(example_prompts[4], help=example_prompts_help[4]):
+    #     button_pressed = example_prompts[4]
+    # elif button_cols_2[2].button(example_prompts[5], help=example_prompts_help[5]):
+    #     button_pressed = example_prompts[5]
     if prompt := (st.chat_input("What cards are you looking for?") or button_pressed):
         # Display user message in chat message container
         with st.chat_message("user"):
@@ -449,22 +460,58 @@ def render_home_page():
                         message_placeholder.markdown(full_response)
                         response += full_response + " "
 
-                    # Create a new row of columns for every NUM_IMAGES_PER_ROW images
-                    if index % NUM_IMAGES_PER_ROW == 0:
-                        cols = st.columns(NUM_IMAGES_PER_ROW)
+                    # # Create a new row of columns for every NUM_IMAGES_PER_ROW images
+                    # if index % NUM_IMAGES_PER_ROW == 0:
+                    #     cols = st.columns(NUM_IMAGES_PER_ROW)
 
-                    if row["img"]:
-                        # Display image in the column
-                        cols[index % NUM_IMAGES_PER_ROW].image(row["img"], width=200)
-                        images.append(row["img"])
-                    else:
-                        cols[index % NUM_IMAGES_PER_ROW].write(
-                            f"No Image Available for: {row['type']}"
-                        )
+                    # if row["img"]:
+                    #     # Display image in the column
+                    #     cols[index % NUM_IMAGES_PER_ROW].image(row["img"], width=200)
+                    #     images.append(row["img"])
+                    # else:
+                    #     cols[index % NUM_IMAGES_PER_ROW].write(
+                    #         f"No Image Available for: {row['type']}"
+                    #     )
+            for index, row in df.iterrows():
+                # Create a new row of columns for every NUM_IMAGES_PER_ROW images
+                if index % NUM_IMAGES_PER_ROW == 0:
+                    cols = st.columns(NUM_IMAGES_PER_ROW)
 
-                st.session_state.messages.append(
-                    {"role": "assistant", "content": response, "images": images}
-                )
+                if row["img"]:
+                    # Display image in the column
+                    cols[index % NUM_IMAGES_PER_ROW].image(row["img"], width=200)
+                    images.append(row["img"])
+                else:
+                    cols[index % NUM_IMAGES_PER_ROW].write(
+                        f"No Image Available for: {row['type']}"
+                    )
+
+            st.session_state.messages.append(
+                {"role": "assistant", "content": response, "images": images}
+            )
+            # Example usage
+            search_criteria = prompt
+            card_options = generate_magic_card_options(search_criteria)
+            # Regular expression to match card names and descriptions
+            pattern = re.compile(r'(\d+)\. "(.*?)" - (.*?)\.|(\d+)\. (.*?) - (.*?)\.')
+            if(card_options.choices[0].message):
+            # Find all matches
+                matches = pattern.findall(card_options.choices[0].message.content)
+                # Create arrays for card names and descriptions
+                example_prompts=[]
+                example_prompts_help=[]
+                for match in matches:
+                    if match[1]:  # for input_string2 format
+                        example_prompts.append(match[1])
+                        example_prompts_help.append(match[2])
+                    else:  # for input_string1 format
+                        example_prompts.append(match[4])
+                        example_prompts_help.append(match[5])
+                time.sleep(1)
+                st.session_state.example_prompts = example_prompts
+                st.session_state.example_prompts_help = example_prompts_help
+                st.rerun()
+            else:
                 st.rerun()
                
 def render_faq_page():
@@ -688,12 +735,19 @@ def display_chat_messages() -> None:
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
-            if "images" in message:
-                for i in range(0, len(message["images"]), NUM_IMAGES_PER_ROW):
-                    cols = st.columns(NUM_IMAGES_PER_ROW)
-                    for j in range(NUM_IMAGES_PER_ROW):
-                        if i + j < len(message["images"]):
-                            cols[j].image(message["images"][i + j], width=200)
+            # if "images" in message:
+            #     for i in range(0, len(message["images"]), NUM_IMAGES_PER_ROW):
+            #         cols = st.columns(NUM_IMAGES_PER_ROW)
+            #         for j in range(NUM_IMAGES_PER_ROW):
+            #             if i + j < len(message["images"]):
+            #                 cols[j].image(message["images"][i + j], width=200)
+        # with st.chat_message(message["role"]):
+        if "images" in message:
+            for i in range(0, len(message["images"]), NUM_IMAGES_PER_ROW):
+                cols = st.columns(NUM_IMAGES_PER_ROW)
+                for j in range(NUM_IMAGES_PER_ROW):
+                    if i + j < len(message["images"]):
+                        cols[j].image(message["images"][i + j], width=200)
 
 
 # Environment variables
@@ -804,6 +858,35 @@ with st.sidebar:
             df = pd.DataFrame(np.random.randn(50, 20), columns=("col %d" % i for i in range(20)))
             st.dataframe(df)  # Same as st.write(df)
            
+def generate_magic_card_options(search_criteria):
+    """
+    Generate a list of Magic: The Gathering card options based on the search criteria using OpenAI API.
+
+    Parameters:
+    - search_criteria (str): The criteria to generate card options.
+
+    Returns:
+    - str: List of card options with descriptions.
+    """
+    prompt = f"""
+    Generate a list of Magic: The Gathering card options based on the following search criteria:
+    {search_criteria}
+    Provide 4 new card options that are related to the specified criteria, including abilities, colors, or card types with a small description for each (10 words only).
+    """
+    
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",  # Use a suitable model, e.g., gpt-3.5-turbo or another
+        messages=[
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=150,  # Adjust as needed
+        temperature=0.7  # Adjust as needed
+    )
+    
+    result = response
+    return result
+
+
 
 
 # Map menu items to functions
